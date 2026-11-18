@@ -12,6 +12,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^3.6.4",
+        "proengsoft/laravel-jsvalidation": "^4.10",
         "spatie/laravel-permission": "^6.25"
     },
     "require-dev": {
@@ -26,6 +27,7 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
+            "domain\\": "domain/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }
