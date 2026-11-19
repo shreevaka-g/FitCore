@@ -16,14 +16,8 @@ class MemberController extends Controller
     {
         try {
 
-            $users = MemberFacade::allWithParamAndPaginate($request->all());
 
-            $allUsers = MemberFacade::allUsers();
-            $totalCount = $allUsers->count();
-            $activeCount = MemberFacade::activeCount();
-            $inactiveCount = MemberFacade::deactiveCount();
-
-            return view('pages.admin.member.index', compact('users','totalCount','activeCount','inactiveCount'));
+            return view('pages.admin.member.index');
         } catch (Throwable $th) {
             return redirect()->back()->with('error', 'Something went wrong');
         }

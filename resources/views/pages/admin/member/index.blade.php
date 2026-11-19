@@ -1,4 +1,4 @@
-@extends('layouts.app', ['activePage' => 'user', 'activeSection' => 'admin'])
+@extends('layouts.app', ['activePage' => 'member', 'activeSection' => 'admin'])
 
 @section('content')
 
@@ -24,7 +24,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-12 col-sm-6 col-xl-4">
         <div class="stat-card border-left-success">
             <div class="stat-icon bg-success-soft text-success">
@@ -116,8 +116,8 @@
                             <td>
                                 <div class="status-toggle-wrapper">
                                     <label class="switch-ios">
-                                        <input type="checkbox" class="status-toggle-checkbox" 
-                                               data-id="{{ $user->id }}" 
+                                        <input type="checkbox" class="status-toggle-checkbox"
+                                               data-id="{{ $user->id }}"
                                                {{ $user->is_active ? 'checked' : '' }}>
                                         <span class="slider-ios"></span>
                                     </label>
@@ -132,7 +132,7 @@
                             <td class="pe-4 text-center">
                                 <div class="d-flex justify-content-center gap-2">
                                     <!-- View Action -->
-                                    <button class="btn btn-action btn-action-info view-user-btn" 
+                                    <button class="btn btn-action btn-action-info view-user-btn"
                                             data-id="{{ $user->id }}"
                                             data-avatar="{{ $user->image_url }}"
                                             data-name="{{ $user->name }}"
@@ -192,7 +192,7 @@
                     </div>
                     <h4 class="fw-bold text-dark mb-1" id="view_name">User</h4>
                 </div>
-                
+
                 <div class="divider mb-4"></div>
 
                 <div class="row g-3">
@@ -234,7 +234,7 @@
 @push('custom_scripts')
 <script type="text/javascript">
     $(document).ready(function() {
-        
+
         // CSRF Token setup for AJAX requests
         $.ajaxSetup({
             headers: {
@@ -261,7 +261,7 @@
                 },
                 success: function(response) {
                     checkbox.prop('disabled', false);
-                    
+
                     // Update layout elements
                     if (newStatus === 1) {
                         textElement.text('Active').removeClass('text-danger').addClass('text-success');
@@ -270,7 +270,7 @@
                         textElement.text('Inactive').removeClass('text-success').addClass('text-danger');
                         toastr.info('User deactivated successfully.', 'Status Updated');
                     }
-                    
+
                     // Reload active/inactive stats counters dynamically
                     updateStatsSection();
                 },
@@ -286,7 +286,7 @@
         function updateStatsSection() {
             let active = 0;
             let inactive = 0;
-            
+
             $('.status-toggle-checkbox').each(function() {
                 if ($(this).prop('checked')) {
                     active++;

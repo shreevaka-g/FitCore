@@ -19,7 +19,7 @@ class RedirectHomeIfAuthenticated
 
             return auth()->user()->hasRole('admin')
                 ? redirect()->route('admin.dashboard')
-                : redirect()->route('user.dashboard');
+                : redirect()->route('member.dashboard');
         }
 
         return $next($request);

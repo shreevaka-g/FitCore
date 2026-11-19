@@ -4,7 +4,7 @@ namespace domain\Services;
 
 use App\Models\User;
 
-class UserService
+class MemberService
 {
     protected $user;
 

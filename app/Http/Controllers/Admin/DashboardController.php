@@ -12,11 +12,10 @@ class DashboardController extends Controller
     public function index()
     {
         try {
+            // $allUsers = MemberFacade::allUsers();
+            // $totalCount = $allUsers->count();
 
-            $allUsers = MemberFacade::allUsers();
-            $totalCount = $allUsers->count();
-
-            return view('pages.admin.dashboard.index', compact('totalCount'));
+            return view('pages.admin.dashboard.index');
         } catch (Throwable $th) {
             return redirect()->back()->with('error', 'Something went wrong');
         }
