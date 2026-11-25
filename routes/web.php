@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Member\DashboardController as MemberDashboardController;
 use App\Http\Controllers\Admin\MemberController;
+use App\Http\Controllers\Admin\MembershipPlanController;
 
 
 Route::get('/', function () {
@@ -23,6 +24,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::post('status-change-member', [MemberController::class, 'updateMemberStatus'])->name('update.member.status');
 
         Route::resource('members', MemberController::class);
+        Route::resource('membership-plans', MembershipPlanController::class);
     });
 
 //Member
