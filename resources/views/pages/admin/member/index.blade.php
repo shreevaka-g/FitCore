@@ -137,11 +137,11 @@
     </div>
 </div>
 
-<!-- Quick Statistics Row -->
+<!-- Quick Statistics Row (Clean Unified White Theme with Accent Border) -->
 <div class="row g-3 mb-4 animate-up" style="animation-delay: 0.1s">
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="stat-card-modern">
-            <div class="stat-icon-wrapper" style="background: rgba(79, 70, 229, 0.12); color: #4f46e5;">
+            <div class="stat-icon-wrapper">
                 <i class="fas fa-users"></i>
             </div>
             <div>
@@ -153,36 +153,36 @@
 
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="stat-card-modern">
-            <div class="stat-icon-wrapper" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
+            <div class="stat-icon-wrapper">
                 <i class="fas fa-user-check"></i>
             </div>
             <div>
                 <span class="stat-label-modern">Active Members</span>
-                <h3 class="stat-value-modern text-success" id="statActiveMembers">{{ $activeCount }}</h3>
+                <h3 class="stat-value-modern" id="statActiveMembers">{{ $activeCount }}</h3>
             </div>
         </div>
     </div>
 
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="stat-card-modern">
-            <div class="stat-icon-wrapper" style="background: rgba(239, 68, 68, 0.12); color: #ef4444;">
+            <div class="stat-icon-wrapper">
                 <i class="fas fa-user-times"></i>
             </div>
             <div>
                 <span class="stat-label-modern">Deactive / Expired</span>
-                <h3 class="stat-value-modern text-danger" id="statInactiveMembers">{{ $inactiveCount }}</h3>
+                <h3 class="stat-value-modern" id="statInactiveMembers">{{ $inactiveCount }}</h3>
             </div>
         </div>
     </div>
 
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="stat-card-modern">
-            <div class="stat-icon-wrapper" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+            <div class="stat-icon-wrapper">
                 <i class="fas fa-clock"></i>
             </div>
             <div>
                 <span class="stat-label-modern">Expiring Soon</span>
-                <h3 class="stat-value-modern text-warning" id="statExpiringMembers">{{ $expiringCount }}</h3>
+                <h3 class="stat-value-modern" id="statExpiringMembers">{{ $expiringCount }}</h3>
             </div>
         </div>
     </div>
@@ -247,7 +247,7 @@
                         <th class="py-3">Contact & Email</th>
                         <th class="py-3">Membership Plan</th>
                         <th class="py-3">Validity Period</th>
-                        <th class="py-3 text-center" style="width: 160px">Status (Active/Deactive)</th>
+                        <th class="py-3 text-center" style="width: 120px">Status</th>
                         <th class="pe-4 py-3 text-center" style="width: 150px">Actions</th>
                     </tr>
                 </thead>
@@ -317,20 +317,20 @@
                                 @endif
                             </td>
 
-                            <!-- Validity Period -->
+                            <!-- Validity Period (Clean Neutral Icons) -->
                             <td>
                                 <div class="small text-dark fw-medium">
-                                    <i class="far fa-calendar-check text-success me-1"></i> {{ $startDate ? $startDate->format('M d, Y') : 'N/A' }}
+                                    <i class="far fa-calendar-alt text-muted me-1"></i> {{ $startDate ? $startDate->format('M d, Y') : 'N/A' }}
                                 </div>
                                 <div class="small text-muted">
-                                    <i class="far fa-calendar-times text-danger me-1"></i> Exp: {{ $endDate ? $endDate->format('M d, Y') : 'N/A' }}
+                                    <i class="far fa-clock text-muted me-1"></i> Exp: {{ $endDate ? $endDate->format('M d, Y') : 'N/A' }}
                                 </div>
                             </td>
 
-                            <!-- Active / Inactive Status Switch -->
+                            <!-- Active / Inactive Status Switch (Only Toggle, No text name) -->
                             <td class="text-center">
-                                <div class="status-toggle-wrapper justify-content-center">
-                                    <label class="switch-ios">
+                                <div class="d-flex justify-content-center">
+                                    <label class="switch-ios" title="{{ $member->is_active ? 'Active (Click to deactivate)' : 'Deactive (Click to activate)' }}">
                                         <input type="checkbox" 
                                                class="status-toggle-checkbox"
                                                data-id="{{ $member->id }}"
@@ -338,10 +338,6 @@
                                                {{ $member->is_active ? 'checked' : '' }}>
                                         <span class="slider-ios"></span>
                                     </label>
-                                    <span class="status-badge-text {{ $member->is_active ? 'text-success' : 'text-danger' }} fw-semibold ms-1 small"
-                                          id="status-text-{{ $member->id }}">
-                                        {{ $member->is_active ? 'Active' : 'Deactive' }}
-                                    </span>
                                 </div>
                             </td>
 
@@ -534,7 +530,7 @@
                     </div>
 
                     <!-- Emergency & Fitness Goal Info -->
-                    <h6 class="fw-bold text-dark mb-3"><i class="fas fa-heartbeat text-danger me-2"></i>Emergency & Fitness Goals</h6>
+                    <h6 class="fw-bold text-dark mb-3"><i class="fas fa-heartbeat text-secondary me-2"></i>Emergency & Fitness Goals</h6>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label small fw-semibold text-muted">Emergency Contact Name & Phone</label>
@@ -665,7 +661,7 @@
                     </div>
 
                     <!-- Emergency & Goals -->
-                    <h6 class="fw-bold text-dark mb-3"><i class="fas fa-heartbeat text-danger me-2"></i>Emergency & Fitness Goals</h6>
+                    <h6 class="fw-bold text-dark mb-3"><i class="fas fa-heartbeat text-secondary me-2"></i>Emergency & Fitness Goals</h6>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label small fw-semibold text-muted">Emergency Contact</label>
@@ -711,7 +707,7 @@
                         <img id="view_avatar" src="" alt="Member" 
                              class="rounded-circle border border-3 border-white shadow" 
                              style="width: 82px; height: 82px; object-fit: cover;">
-                        <span id="view_status_pill" class="badge bg-success position-absolute bottom-0 end-0 rounded-pill border border-2 border-white px-2 py-1 small">
+                        <span id="view_status_pill" class="badge bg-indigo position-absolute bottom-0 end-0 rounded-pill border border-2 border-white px-2 py-1 small">
                             Active
                         </span>
                     </div>
@@ -757,21 +753,21 @@
 
                     <div class="col-6">
                         <div class="info-tile">
-                            <div class="info-tile-label"><i class="far fa-calendar-check text-success me-1"></i> Joined Date</div>
-                            <div class="info-tile-value small text-success" id="view_start">Jan 10, 2026</div>
+                            <div class="info-tile-label"><i class="far fa-calendar-alt text-muted me-1"></i> Joined Date</div>
+                            <div class="info-tile-value small text-dark" id="view_start">Jan 10, 2026</div>
                         </div>
                     </div>
 
                     <div class="col-6">
                         <div class="info-tile">
-                            <div class="info-tile-label"><i class="far fa-calendar-times text-danger me-1"></i> Expiry Date</div>
-                            <div class="info-tile-value small text-danger" id="view_end">Jan 09, 2027</div>
+                            <div class="info-tile-label"><i class="far fa-clock text-muted me-1"></i> Expiry Date</div>
+                            <div class="info-tile-value small text-muted" id="view_end">Jan 09, 2027</div>
                         </div>
                     </div>
 
                     <div class="col-12">
                         <div class="info-tile">
-                            <div class="info-tile-label"><i class="fas fa-heartbeat text-danger me-1"></i> Emergency Contact</div>
+                            <div class="info-tile-label"><i class="fas fa-heartbeat text-secondary me-1"></i> Emergency Contact</div>
                             <div class="info-tile-value small" id="view_emergency">Not Provided</div>
                         </div>
                     </div>
@@ -803,8 +799,8 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-body p-4 text-center">
-                <div class="rounded-circle bg-danger-soft text-danger d-inline-flex align-items-center justify-content-center mb-3" style="width: 72px; height: 72px; background: rgba(239, 68, 68, 0.1);">
-                    <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 72px; height: 72px; background: rgba(15, 23, 42, 0.08); color: #0f172a;">
+                    <i class="fas fa-trash-alt fa-2x"></i>
                 </div>
                 <h5 class="fw-bold text-dark mb-2">Delete Gym Member?</h5>
                 <p class="text-muted small mb-3">
@@ -818,7 +814,7 @@
                     @method('DELETE')
                     <div class="d-flex justify-content-center gap-2">
                         <button type="button" class="btn btn-outline-custom px-4" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger px-4 shadow-sm">
+                        <button type="submit" class="btn btn-dark px-4 shadow-sm" style="background-color: #0f172a; border-color: #0f172a;">
                             <i class="far fa-trash-alt me-1"></i> Yes, Delete
                         </button>
                     </div>
@@ -855,13 +851,13 @@
 
         // ========================================================
         // 1. DYNAMIC ACTIVE / DEACTIVE STATUS TOGGLE (AJAX Switch)
+        // Web Theme (Indigo / Slate, No Red/Green)
         // ========================================================
         $('.status-toggle-checkbox').on('change', function() {
             const checkbox = $(this);
             const memberId = checkbox.data('id');
             const memberName = checkbox.data('name') || 'Member';
             const newStatus = checkbox.prop('checked') ? 1 : 0;
-            const textElement = $(`#status-text-${memberId}`);
 
             // Disable switch momentarily to prevent double triggers
             checkbox.prop('disabled', true);
@@ -876,12 +872,12 @@
                 success: function(response) {
                     checkbox.prop('disabled', false);
 
-                    // Update UI text and color badge
+                    // Update switch tooltip and trigger feedback
                     if (newStatus === 1) {
-                        textElement.text('Active').removeClass('text-danger').addClass('text-success');
+                        checkbox.closest('.switch-ios').attr('title', 'Active (Click to deactivate)');
                         toastr.success(`${memberName} has been activated!`, 'Status Updated');
                     } else {
-                        textElement.text('Deactive').removeClass('text-success').addClass('text-danger');
+                        checkbox.closest('.switch-ios').attr('title', 'Deactive (Click to activate)');
                         toastr.info(`${memberName} has been deactivated.`, 'Status Updated');
                     }
 
@@ -951,9 +947,9 @@
 
             const statusPill = $('#view_status_pill');
             if (isActive === 1) {
-                statusPill.text('Active').removeClass('bg-danger').addClass('bg-success');
+                statusPill.text('Active').removeClass('bg-secondary').addClass('bg-indigo');
             } else {
-                statusPill.text('Deactive').removeClass('bg-success').addClass('bg-danger');
+                statusPill.text('Deactive').removeClass('bg-indigo').addClass('bg-secondary');
             }
 
             // Bind edit button inside view modal to trigger the edit modal
@@ -1026,7 +1022,7 @@
                     html: `Are you sure you want to remove <strong>${name}</strong> (<span class="font-monospace text-primary">${code}</span>)?<br><small class="text-muted">This action will delete all membership history.</small>`,
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#ef4444',
+                    confirmButtonColor: '#0f172a',
                     cancelButtonColor: '#64748b',
                     confirmButtonText: '<i class="far fa-trash-alt me-1"></i> Yes, Delete',
                     cancelButtonText: 'Cancel',
