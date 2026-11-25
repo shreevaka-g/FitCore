@@ -146,23 +146,12 @@
                 <i class="fas fa-pause-circle"></i>
             </div>
             <div>
-                <span class="stat-label-modern">Deactive / Hidden</span>
-                <h3 class="stat-value-modern" id="statInactivePlans">{{ $inactiveCount }}</h3>
+                <span class="stat-label-modern">Inactive Plans</span>
+                <h3 class="stat-value-modern" id="statInactivePlans">{{ $deactiveCount }}</h3>
             </div>
         </div>
     </div>
 
-    <div class="col-12 col-sm-6 col-xl-3">
-        <div class="stat-card-modern">
-            <div class="stat-icon-wrapper">
-                <i class="fas fa-crown"></i>
-            </div>
-            <div>
-                <span class="stat-label-modern">VIP / Featured</span>
-                <h3 class="stat-value-modern" id="statVipPlans">{{ $vipCount }}</h3>
-            </div>
-        </div>
-    </div>
 </div>
 
 <!-- Search and Filter Bar -->
@@ -184,7 +173,7 @@
                 <select name="status" class="form-select form-select-modern">
                     <option value="">All Statuses</option>
                     <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Active Only</option>
-                    <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Deactive Only</option>
+                    <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Inactive Only</option>
                 </select>
             </div>
 
@@ -231,134 +220,164 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($displayPlans as $plan)
-                        @php
-                            $durationText = $plan->duration_value . ' ' . ucfirst($plan->duration_unit ?? 'months');
-                            $colorCode = strtolower($plan->color_code ?? 'gold');
-                            $priceFormatted = number_format($plan->price ?? 0, 2);
-                        @endphp
-                        <tr id="plan-row-{{ $plan->id }}" class="table-row-modern">
-                            <!-- Plan Name & Tier Badge -->
-                            <td class="ps-4">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="stat-icon-wrapper" style="width: 42px; height: 42px; border-radius: 10px; background: rgba(79, 70, 229, 0.08); color: var(--gym-primary); font-size: 1.15rem;">
-                                        @if(stripos($colorCode, 'vip') !== false)
-                                            <i class="fas fa-crown text-warning"></i>
-                                        @elseif(stripos($colorCode, 'platinum') !== false)
-                                            <i class="fas fa-medal text-primary"></i>
-                                        @elseif(stripos($colorCode, 'gold') !== false)
-                                            <i class="fas fa-fire text-amber"></i>
-                                        @else
-                                            <i class="fas fa-dumbbell text-secondary"></i>
-                                        @endif
+                    @forelse($plans as $plan)
+                    @php
+                        $durationText = $plan->duration_value . ' ' . ucfirst($plan->duration_unit);
+                        $priceFormatted = number_format($plan->price, 2);
+                        $colorCode = $plan->color_code ?? '#6B7280';
+                    @endphp
+
+                    <tr id="plan-row-{{ $plan->id }}" class="table-row-modern">
+
+                        <!-- Plan Name & Color -->
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center gap-3">
+
+                                <div class="stat-icon-wrapper"
+                                    style="
+                                        width: 42px;
+                                        height: 42px;
+                                        border-radius: 10px;
+                                        background: {{ $colorCode }}20;
+                                        color: {{ $colorCode }};
+                                        font-size: 1.15rem;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                    ">
+                                    @if($plan->image_path)
+                                        <img src="{{$plan->image_url}}"
+                                            alt="{{ $plan->name }}"
+                                            style="width: 100%; height: 100%; object-fit: cover;">
+                                    @else
+                                        <i class="fas fa-dumbbell"></i>
+                                    @endif
+                                </div>
+
+                                <div>
+                                    <div class="fw-bold text-dark mb-0">
+                                        {{ $plan->name }}
                                     </div>
-                                    <div>
-                                        <div class="fw-bold text-dark mb-0">{{ $plan->name }}</div>
-                                        @if(stripos($colorCode, 'vip') !== false)
-                                            <span class="badge badge-plan plan-vip">VIP Package</span>
-                                        @elseif(stripos($colorCode, 'platinum') !== false)
-                                            <span class="badge badge-plan plan-platinum">Pro Tier</span>
-                                        @elseif(stripos($colorCode, 'gold') !== false)
-                                            <span class="badge badge-plan plan-gold">Popular</span>
-                                        @else
-                                            <span class="badge badge-plan plan-silver">Standard</span>
-                                        @endif
-                                    </div>
+
+                                    <span class="badge badge-plan"
+                                        style="
+                                            display: inline-block;
+                                            width: 60px;
+                                            height: 8px;
+                                            padding: 0;
+                                            background: {{ $colorCode }};
+                                            border-radius: 4px;
+                                        ">
+                                    </span>
                                 </div>
-                            </td>
 
-                            <!-- Price -->
-                            <td>
-                                <div class="fw-bold text-dark fs-6">
-                                    ${{ $priceFormatted }}
-                                </div>
-                                <div class="small text-muted">
-                                    / {{ rtrim($plan->duration_unit ?? 'period', 's') }}
-                                </div>
-                            </td>
+                            </div>
+                        </td>
 
-                            <!-- Duration -->
-                            <td>
-                                <div class="small text-dark fw-medium">
-                                    <i class="far fa-clock text-muted me-1"></i> {{ $durationText }}
-                                </div>
-                            </td>
+                        <!-- Price -->
+                        <td>
+                            <div class="fw-bold text-dark fs-6">
+                                Rs. {{ $priceFormatted }}
+                            </div>
 
-                            <!-- Description -->
-                            <td style="max-width: 320px; white-space: normal;">
-                                <div class="small text-muted text-truncate-2" title="{{ $plan->description }}">
-                                    {{ Str::limit($plan->description, 75, '...') }}
-                                </div>
-                            </td>
+                            <div class="small text-muted">
+                                / {{ rtrim($plan->duration_unit, 's') }}
+                            </div>
+                        </td>
 
-                            <!-- Sort Order -->
-                            <td class="text-center">
-                                <span class="badge bg-light text-secondary border font-monospace px-2 py-1">
-                                    #{{ $plan->sort_order ?? 1 }}
-                                </span>
-                            </td>
+                        <!-- Duration -->
+                        <td>
+                            <div class="small text-dark fw-medium">
+                                <i class="far fa-clock text-muted me-1"></i>
+                                {{ $durationText }}
+                            </div>
+                        </td>
 
-                            <!-- Active / Inactive Status Switch (Only Toggle, No text name) -->
-                            <td class="text-center">
-                                <div class="d-flex justify-content-center">
-                                    <label class="switch-ios" title="{{ $plan->is_active ? 'Active (Click to deactivate)' : 'Deactive (Click to activate)' }}">
-                                        <input type="checkbox" 
-                                               class="status-toggle-checkbox"
-                                               data-id="{{ $plan->id }}"
-                                               data-name="{{ $plan->name }}"
-                                               {{ $plan->is_active ? 'checked' : '' }}>
-                                        <span class="slider-ios"></span>
-                                    </label>
-                                </div>
-                            </td>
+                        <!-- Description -->
+                        <td style="max-width: 320px; white-space: normal;">
+                            <div class="small text-muted text-truncate-2"
+                                title="{{ $plan->description }}">
+                                {{ Str::limit($plan->description, 75, '...') ?: 'No description' }}
+                            </div>
+                        </td>
 
-                            <!-- Actions -->
-                            <td class="pe-4 text-center">
-                                <div class="d-flex justify-content-center gap-2">
-                                    <!-- View Action -->
-                                    <button type="button" 
-                                            class="btn-action btn-action-view view-plan-btn"
-                                            data-id="{{ $plan->id }}"
-                                            data-name="{{ $plan->name }}"
-                                            data-price="{{ $priceFormatted }}"
-                                            data-duration-value="{{ $plan->duration_value }}"
-                                            data-duration-unit="{{ $plan->duration_unit }}"
-                                            data-color-code="{{ $plan->color_code }}"
-                                            data-sort-order="{{ $plan->sort_order }}"
-                                            data-description="{{ $plan->description }}"
-                                            data-active="{{ $plan->is_active ? 1 : 0 }}"
-                                            title="View Plan Details">
-                                        <i class="far fa-eye"></i>
-                                    </button>
+                        <!-- Sort Order -->
+                        <td class="text-center">
+                            <span class="badge bg-light text-secondary border font-monospace px-2 py-1">
+                                #{{ $plan->sort_order }}
+                            </span>
+                        </td>
 
-                                    <!-- Edit Action -->
-                                    <button type="button" 
-                                            class="btn-action btn-action-edit edit-plan-btn"
-                                            data-id="{{ $plan->id }}"
-                                            data-name="{{ $plan->name }}"
-                                            data-price="{{ $plan->price }}"
-                                            data-duration-value="{{ $plan->duration_value }}"
-                                            data-duration-unit="{{ $plan->duration_unit }}"
-                                            data-color-code="{{ $plan->color_code }}"
-                                            data-sort-order="{{ $plan->sort_order }}"
-                                            data-description="{{ $plan->description }}"
-                                            data-active="{{ $plan->is_active ? 1 : 0 }}"
-                                            title="Edit Plan">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </button>
+                        <!-- Active / Inactive Status -->
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center">
+                                <label class="switch-ios"
+                                    title="{{ $plan->is_active ? 'Active (Click to deactivate)' : 'Inactive (Click to activate)' }}">
 
-                                    <!-- Delete Action -->
-                                    <button type="button" 
-                                            class="btn-action btn-action-delete delete-plan-btn"
-                                            data-id="{{ $plan->id }}"
-                                            data-name="{{ $plan->name }}"
-                                            title="Delete Plan">
-                                        <i class="far fa-trash-alt"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
+                                    <input type="checkbox"
+                                        class="status-toggle-checkbox"
+                                        data-id="{{ $plan->id }}"
+                                        data-name="{{ $plan->name }}"
+                                        {{ $plan->is_active ? 'checked' : '' }}>
+
+                                    <span class="slider-ios"></span>
+                                </label>
+                            </div>
+                        </td>
+
+                        <!-- Actions -->
+                        <td class="pe-4 text-center">
+                            <div class="d-flex justify-content-center gap-2">
+
+                                <!-- View -->
+                                <button type="button"
+                                        class="btn-action btn-action-view view-plan-btn"
+                                        data-id="{{ $plan->id }}"
+                                        data-name="{{ $plan->name }}"
+                                        data-price="{{ $plan->price }}"
+                                        data-duration-value="{{ $plan->duration_value }}"
+                                        data-duration-unit="{{ $plan->duration_unit }}"
+                                        data-color-code="{{ $plan->color_code }}"
+                                        data-sort-order="{{ $plan->sort_order }}"
+                                        data-description="{{ $plan->description }}"
+                                        data-active="{{ $plan->is_active ? 1 : 0 }}"
+                                        data-image="{{ $plan->image_path ? asset('storage/' . $plan->image_path) : '' }}"
+                                        title="View Plan Details">
+                                    <i class="far fa-eye"></i>
+                                </button>
+
+                                <!-- Edit -->
+                                <button type="button"
+                                        class="btn-action btn-action-edit edit-plan-btn"
+                                        data-id="{{ $plan->id }}"
+                                        data-name="{{ $plan->name }}"
+                                        data-price="{{ $plan->price }}"
+                                        data-duration-value="{{ $plan->duration_value }}"
+                                        data-duration-unit="{{ $plan->duration_unit }}"
+                                        data-color-code="{{ $plan->color_code }}"
+                                        data-sort-order="{{ $plan->sort_order }}"
+                                        data-description="{{ $plan->description }}"
+                                        data-active="{{ $plan->is_active ? 1 : 0 }}"
+                                        data-image="{{ $plan->image_path ? asset('storage/' . $plan->image_path) : '' }}"
+                                        title="Edit Plan">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+
+                                <!-- Delete -->
+                                <button type="button"
+                                        class="btn-action btn-action-delete delete-plan-btn"
+                                        data-id="{{ $plan->id }}"
+                                        data-name="{{ $plan->name }}"
+                                        title="Delete Plan">
+                                    <i class="far fa-trash-alt"></i>
+                                </button>
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+                @empty
                         <tr>
                             <td colspan="7" class="text-center py-5">
                                 <div class="py-4">
@@ -386,107 +405,240 @@
 </div>
 
 
-<!-- ========================================== -->
-<!-- 1. CREATE NEW MEMBERSHIP PLAN MODAL         -->
-<!-- ========================================== -->
-<div class="modal fade" id="createPlanModal" tabindex="-1" aria-labelledby="createPlanModalLabel" aria-hidden="true">
+<!-- CREATE MEMBERSHIP PLAN MODAL -->
+<div class="modal fade" id="createPlanModal" tabindex="-1"
+    aria-labelledby="createPlanModalLabel" aria-hidden="true">
+
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg">
+
+            <!-- Modal Header -->
             <div class="modal-header modal-header-gradient border-0">
                 <div class="d-flex align-items-center gap-2">
-                    <div class="rounded-circle bg-white text-primary p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                    <div class="rounded-circle bg-white text-primary p-2 d-flex align-items-center justify-content-center"
+                        style="width: 38px; height: 38px;">
                         <i class="fas fa-plus-circle"></i>
                     </div>
+
                     <div>
-                        <h5 class="modal-title fw-bold mb-0" id="createPlanModalLabel">Create Membership Plan</h5>
-                        <p class="small text-white-50 mb-0">Define pricing, duration, perks, and availability.</p>
+                        <h5 class="modal-title fw-bold mb-0" id="createPlanModalLabel">
+                            Create Membership Plan
+                        </h5>
+                        <p class="small text-white-50 mb-0">
+                            Define pricing, duration, and availability.
+                        </p>
                     </div>
                 </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <button type="button" class="btn-close btn-close-white"
+                    data-bs-dismiss="modal"></button>
             </div>
 
-            <form id="createPlanForm" method="POST" action="{{ route('admin.membership-plans.store') }}" enctype="multipart/form-data">
+            <!-- Form -->
+            <form id="createPlanForm"
+                method="POST"
+                action="{{ route('admin.membership-plans.store') }}" enctype="multipart/form-data">
                 @csrf
+
                 <div class="modal-body p-4">
-                    <!-- Basic Plan Info -->
-                    <h6 class="fw-bold text-dark mb-3"><i class="fas fa-tag text-primary me-2"></i>Package Identity</h6>
+
+                    <!-- Package Identity -->
+                    <h6 class="fw-bold text-dark mb-3">
+                        <i class="fas fa-tag text-primary me-2"></i>
+                        Package Identity
+                    </h6>
+
                     <div class="row g-3 mb-4">
+
                         <div class="col-md-7">
-                            <label class="form-label small fw-bold text-dark">Plan Name <span class="text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control form-control-modern" placeholder="e.g. Annual VIP All-Access" required>
+                            <label class="form-label small fw-bold text-dark">
+                                Plan Name <span class="text-danger">*</span>
+                            </label>
+
+                            <input type="text"
+                                name="name"
+                                class="form-control form-control-modern"
+                                placeholder="e.g. Annual VIP"
+                                maxlength="255"
+                                required>
                         </div>
+
                         <div class="col-md-5">
-                            <label class="form-label small fw-bold text-dark">Tier Style / Badge</label>
-                            <select name="color_code" class="form-select form-select-modern">
-                                <option value="vip">VIP Package (Crown / Premium)</option>
-                                <option value="platinum">Platinum Tier (Pro / Medal)</option>
-                                <option value="gold" selected>Gold Tier (Popular / Fire)</option>
-                                <option value="silver">Silver Tier (Standard)</option>
-                            </select>
+                            <label class="form-label small fw-bold text-dark">
+                                Badge Color <span class="text-danger">*</span>
+                            </label>
+
+                            <input type="color"
+                                name="color_code"
+                                class="form-control form-control-color w-100 form-control-modern"
+                                value="#D32F2F"
+                                title="Choose badge color"
+                                required>
                         </div>
+
                     </div>
 
-                    <!-- Pricing & Duration Row -->
-                    <h6 class="fw-bold text-dark mb-3"><i class="fas fa-dollar-sign text-primary me-2"></i>Pricing & Duration Structure</h6>
+                    <!-- Pricing & Duration -->
+                    <h6 class="fw-bold text-dark mb-3">
+                        <i class="fas fa-money-bill-wave text-primary me-2"></i>
+                        Pricing & Duration
+                    </h6>
+
                     <div class="row g-3 mb-4">
+
                         <div class="col-md-4">
-                            <label class="form-label small fw-bold text-dark">Price ($ USD) <span class="text-danger">*</span></label>
+                            <label class="form-label small fw-bold text-dark">
+                                Price (LKR) <span class="text-danger">*</span>
+                            </label>
+
                             <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0 border" style="border-radius: 10px 0 0 10px;">$</span>
-                                <input type="number" step="0.01" min="0" name="price" class="form-control form-control-modern" style="border-radius: 0 10px 10px 0;" placeholder="49.00" required>
+                                <span class="input-group-text bg-light">Rs.</span>
+
+                                <input type="number"
+                                    name="price"
+                                    class="form-control form-control-modern"
+                                    placeholder="5000.00"
+                                    min="0"
+                                    step="0.01"
+                                    required>
                             </div>
                         </div>
+
                         <div class="col-md-4">
-                            <label class="form-label small fw-bold text-dark">Duration Value <span class="text-danger">*</span></label>
-                            <input type="number" min="1" name="duration_value" class="form-control form-control-modern" value="1" required>
+                            <label class="form-label small fw-bold text-dark">
+                                Duration Value <span class="text-danger">*</span>
+                            </label>
+
+                            <input type="number"
+                                name="duration_value"
+                                class="form-control form-control-modern"
+                                value="1"
+                                min="1"
+                                required>
                         </div>
+
                         <div class="col-md-4">
-                            <label class="form-label small fw-bold text-dark">Duration Unit <span class="text-danger">*</span></label>
-                            <select name="duration_unit" class="form-select form-select-modern" required>
-                                <option value="months" selected>Months</option>
+                            <label class="form-label small fw-bold text-dark">
+                                Duration Unit <span class="text-danger">*</span>
+                            </label>
+
+                            <select name="duration_unit"
+                                class="form-select form-select-modern"
+                                required>
+
                                 <option value="days">Days</option>
-                                <option value="weeks">Weeks</option>
+                                <option value="months" selected>Months</option>
                                 <option value="years">Years</option>
+
                             </select>
                         </div>
+
                     </div>
 
-                    <!-- Sort Order & Status -->
-                    <h6 class="fw-bold text-dark mb-3"><i class="fas fa-sliders-h text-primary me-2"></i>Display Settings</h6>
+                    <!-- Display Settings -->
+                    <h6 class="fw-bold text-dark mb-3">
+                        <i class="fas fa-sliders-h text-primary me-2"></i>
+                        Display Settings
+                    </h6>
+
                     <div class="row g-3 mb-4">
+
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold text-muted">Sort / Display Order</label>
-                            <input type="number" min="1" name="sort_order" class="form-control form-control-modern" value="1" placeholder="e.g. 1">
-                            <small class="text-muted" style="font-size: 0.72rem;">Lower numbers appear first on registration forms</small>
+                            <label class="form-label small fw-semibold text-muted">
+                                Sort / Display Order
+                            </label>
+
+                            <input type="number"
+                                name="sort_order"
+                                class="form-control form-control-modern"
+                                value="1"
+                                min="1">
+
+                            <small class="text-muted">
+                                Lower numbers appear first.
+                            </small>
                         </div>
+
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold text-muted">Initial Status <span class="text-danger">*</span></label>
-                            <select name="is_active" class="form-select form-select-modern" required>
-                                <option value="1" selected>Active (Available for purchase)</option>
-                                <option value="0">Deactive (Hidden / Archived)</option>
+                            <label class="form-label small fw-semibold text-muted">
+                                Initial Status <span class="text-danger">*</span>
+                            </label>
+
+                            <select name="is_active"
+                                class="form-select form-select-modern"
+                                required>
+
+                                <option value="1" selected>Active</option>
+                                <option value="0">Inactive</option>
+
                             </select>
                         </div>
+
                     </div>
 
-                    <!-- Description & Perks -->
-                    <h6 class="fw-bold text-dark mb-2"><i class="fas fa-list-check text-primary me-2"></i>Perks & Description</h6>
+                    <!-- Image Upload -->
+                    <h6 class="fw-bold text-dark mb-3">
+                        <i class="fas fa-image text-primary me-2"></i>
+                        Plan Image
+                    </h6>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-semibold text-muted">
+                            Upload Image
+                        </label>
+
+                        <input type="file"
+                            name="image"
+                            class="form-control form-control-modern"
+                            accept="image/jpeg,image/png,image/webp">
+
+                        <small class="text-muted">
+                            Supported formats: JPG, PNG, WEBP.
+                            Maximum size: 2MB.
+                        </small>
+                    </div>
+
+                    <!-- Description -->
+                    <h6 class="fw-bold text-dark mb-3">
+                        <i class="fas fa-list-check text-primary me-2"></i>
+                        Description & Features
+                    </h6>
+
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold text-muted">Included Features (Shown to gym members)</label>
-                        <textarea name="description" rows="3" class="form-control form-control-modern" 
-                                  placeholder="e.g. 24/7 gym access, sauna and steam room, locker room amenities, 1 free consultation with fitness trainer."></textarea>
+                        <label class="form-label small fw-semibold text-muted">
+                            Plan Description
+                        </label>
+
+                        <textarea name="description"
+                            rows="3"
+                            class="form-control form-control-modern"
+                            placeholder="e.g. 24/7 gym access, personal trainer consultation, locker facilities..."></textarea>
                     </div>
+
                 </div>
 
+                <!-- Footer -->
                 <div class="modal-footer border-top bg-light p-3">
-                    <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-indigo shadow-sm">
-                        <i class="fas fa-check-circle me-1"></i> Save Membership Plan
+
+                    <button type="button"
+                        class="btn btn-outline-custom"
+                        data-bs-dismiss="modal">
+                        Cancel
                     </button>
+
+                    <button type="submit" class="btn btn-indigo shadow-sm">
+                        <i class="fas fa-check-circle me-1"></i>
+                        Save Membership Plan
+                    </button>
+
                 </div>
+
             </form>
+
         </div>
     </div>
 </div>
+
 
 
 <!-- ========================================== -->

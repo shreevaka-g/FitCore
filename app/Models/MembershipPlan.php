@@ -21,6 +21,10 @@ class MembershipPlan extends Model
         'sort_order',
     ];
 
+    protected $appends = [
+        'image_url',
+    ];
+
     protected function casts(): array
     {
         return [
@@ -29,5 +33,14 @@ class MembershipPlan extends Model
             'is_active' => 'boolean',
             'sort_order' => 'integer',
         ];
+    }
+
+    public function getImageUrlAttribute()
+    {
+        if ($this->image_path) {
+            return asset('storage/' . $this->image_path);
+        } else {
+            return null;
+        }
     }
 }
