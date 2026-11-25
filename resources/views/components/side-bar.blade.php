@@ -162,23 +162,15 @@
         <li class="menu-label">Management</li>
 
         <li class="menu-item">
-            <a href="#" class="menu-link">
-                <i class="fas fa-clipboard-list"></i>
-                <span>aaaaaaaaaaaaaaa</span>
-            </a>
-        </li>
-
-        <li class="menu-item">
-            <a href="#" class="menu-link">
-                <i class="fas fa-car"></i>
-                <span>aaaaaaaaaaa</span>
-            </a>
-        </li>
-
-        <li class="menu-item">
             <a href="{{ route('admin.members.index') }}" class="menu-link {{ $activePage == 'members' ? 'active' : '' }}">
                 <i class="fas fa-users"></i>
                 <span>Members</span>
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="{{ route('admin.membership-plans.index') }}" class="menu-link {{ $activePage == 'membership-plans' ? 'active' : '' }}">
+                <i class="fas fa-users"></i>
+                <span>Membership Plans</span>
             </a>
         </li>
 
